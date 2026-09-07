@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You ♡</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap');
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #fff0f5;
+  font-family: "Quicksand", sans-serif;
+  overflow: hidden;
+  color: #b33d61;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  position: relative;
+}
+
+.card {
+  width: min(92vw, 650px);
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.character {
+  width: 150px;
+  height: 150px;
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 92px;
+  animation: bob 2.5s ease-in-out infinite;
+}
+
+h1 {
+  margin: 0 auto 38px;
+  font-size: clamp(25px, 6vw, 42px);
+  line-height: 1.3;
+  color: #a63859;
+  font-weight: 700;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 45px;
+  min-height: 120px;
+}
+
+button {
+  border: 0;
+  color: white;
+  font-family: inherit;
+  font-size: 23px;
+  font-weight: 700;
+  border-radius: 18px;
+  padding: 18px 50px;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(150, 60, 90, .15);
+  transition:
+    width .45s ease,
+    height .45s ease,
+    padding .45s ease,
+    font-size .45s ease,
+    transform .25s ease,
+    opacity .3s ease;
+}
+
+#yes {
+  background: #67c7a8;
+  min-width: 155px;
+  min-height: 64px;
+}
+
+#no {
+  background: #f2636d;
+  min-width: 155px;
+  min-height: 64px;
+}
+
+button:active {
+  transform: scale(.96);
+}
+
+.message {
+  margin-top: 20px;
+  min-height: 28px;
+  font-size: 17px;
+  color: #c25a78;
+}
+
+.lock {
+  display: none;
+}
+
+.lock h1 {
+  margin-bottom: 18px;
+}
+
+.countdown {
+  font-size: 18px;
+  color: #b84b6b;
+  line-height: 1.7;
+}
+
+.letter {
+  display: none;
+}
+
+.letter h1 {
+  margin-bottom: 22px;
+}
+
+.letter p {
+  max-width: 550px;
+  margin: auto;
+  color: #754353;
+  font-size: 19px;
+  line-height: 1.9;
+  white-space: pre-line;
+}
+
+.signature {
+  margin-top: 25px;
+  font-size: 18px;
+  color: #b33d61;
+}
+
+.heart {
+  position: fixed;
+  left: var(--x);
+  bottom: -40px;
+  font-size: var(--size);
+  opacity: .65;
+  pointer-events: none;
+  animation: rise var(--duration) linear forwards;
+  z-index: 1;
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(0) rotate(0deg);
+    opacity: .65;
+  }
+  to {
+    transform: translateY(-115vh) rotate(25deg);
+    opacity: 0;
+  }
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-8px) rotate(2deg); }
+}
+
+.fade {
+  animation: fade .7s ease forwards;
+}
+
+@keyframes fade {
+  from { opacity: 0; transform: translateY(18px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 520px) {
+  .buttons {
+    gap: 16px;
+  }
+
+  button {
+    padding: 16px 30px;
+    min-width: 125px !important;
+    font-size: 20px;
+  }
+
+  .character {
+    font-size: 76px;
+    height: 115px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <!-- QUESTION -->
+  <section class="card" id="questionScreen">
+    <div class="character">૮ ˶ᵔ ᵕ ᵔ˶ ა</div>
+
+    <h1 id="question">Чи үүрд минийх байх уу? 🥺</h1>
+
+    <div class="buttons">
+      <button id="yes">YES 💗</button>
+      <button id="no">NO</button>
+    </div>
+
+    <div class="message" id="message"></div>
+  </section>
+
+  <!-- LOCKED UNTIL DATE -->
+  <section class="card lock" id="lockScreen">
+    <div class="character">💌</div>
+    <h1>Тэвчээртэй жаахан хүлээгээрэй... 🥺</h1>
+    <div class="countdown" id="countdown"></div>
+  </section>
+
+  <!-- CONFESSION -->
+  <section class="card letter" id="letterScreen">
+    <div class="character">૮ ˶ᵔ ᵕ ᵔ˶ ა 💗</div>
+
+    <h1>Надад чамд хэлэх зүйл байна... 💌</h1>
+
+    <p>
+Чамд хэлэхийг хүсэж байсан зүйлээ
+өнөөдөр зориг гаргаад хэлж байна.
+
+Чи миний хувьд үнэхээр онцгой хүн.
+Чамтай өнгөрүүлсэн жижигхэн мөчүүд хүртэл
+надад маш их үнэ цэнтэй байдаг.
+
+Тиймээс...
+
+Чи надтай хамт байхыг хүсэж байна уу? ♡
+    </p>
+
+    <div class="signature">Чамд зориулж, ♡</div>
+  </section>
+
+</div>
+
+<script>
+/* =========================================
+   CHANGE THIS DATE WHEN YOU ARE READY
+
+   Format:
+   YYYY-MM-DDTHH:MM:SS+08:00
+
+   Example:
+   December 1, 2026 at 00:00 Mongolia time:
+   "2026-12-01T00:00:00+08:00"
+========================================= */
+
+const UNLOCK_DATE = new Date("2026-12-01T00:00:00+08:00");
+
+const questionScreen = document.getElementById("questionScreen");
+const lockScreen = document.getElementById("lockScreen");
+const letterScreen = document.getElementById("letterScreen");
+
+const yes = document.getElementById("yes");
+const no = document.getElementById("no");
+const question = document.getElementById("question");
+const message = document.getElementById("message");
+const countdown = document.getElementById("countdown");
+
+let noClicks = 0;
+
+const messages = [
+  "Чи буруу дарчих шиг боллоо. 🥺",
+  "Арай арай... 😭",
+  "Нээрээ юу. 🥹",
+  "Дахиад дараад үз дээ. 💗",
+  "Дахиад нэг бодоод үзээрэй... 🥺",
+  "ТИЙМ дээр дарах ёстой шүү. ♡"
+];
+
+no.addEventListener("click", () => {
+  noClicks++;
+
+  /*
+    The YES button grows in REAL size.
+    This works independently of transform scaling.
+  */
+  const fontSize = Math.min(23 + noClicks * 5, 58);
+  const padY = Math.min(18 + noClicks * 5, 50);
+  const padX = Math.min(50 + noClicks * 12, 120);
+
+  yes.style.fontSize = fontSize + "px";
+  yes.style.padding = padY + "px " + padX + "px";
+  yes.style.minWidth = (155 + noClicks * 18) + "px";
+  yes.style.minHeight = (64 + noClicks * 10) + "px";
+
+  // NO slowly becomes smaller
+  const noSize = Math.max(.55, 1 - noClicks * .08);
+  no.style.transform = `scale(${noSize})`;
+
+  question.textContent =
+    messages[Math.min(noClicks - 1, messages.length - 1)];
+
+  message.textContent =
+    noClicks >= 3 ? "Чи YES дарахад л болно доо... 💗" : "";
+});
+
+yes.addEventListener("click", () => {
+  questionScreen.style.display = "none";
+  letterScreen.style.display = "block";
+  letterScreen.classList.add("fade");
+
+  startHearts();
+});
+
+function updateCountdown() {
+  const now = new Date();
+  const diff = UNLOCK_DATE - now;
+
+  if (diff <= 0) {
+    lockScreen.style.display = "none";
+    questionScreen.style.display = "block";
+    questionScreen.classList.add("fade");
+    return;
+  }
+
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff / 3600000) % 24);
+  const minutes = Math.floor((diff / 60000) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+
+  countdown.innerHTML =
+    `Нээх хүртэл<br><strong>${days}</strong> өдөр · ` +
+    `<strong>${hours}</strong> цаг · ` +
+    `<strong>${minutes}</strong> минут · ` +
+    `<strong>${seconds}</strong> секунд`;
+}
+
+function checkLock() {
+  if (new Date() < UNLOCK_DATE) {
+    questionScreen.style.display = "none";
+    lockScreen.style.display = "block";
+    updateCountdown();
+  } else {
+    lockScreen.style.display = "none";
+    questionScreen.style.display = "block";
+  }
+}
+
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.textContent = ["♡", "♥", "💗", "💕", "💖"][
+    Math.floor(Math.random() * 5)
+  ];
+
+  heart.style.setProperty("--x", Math.random() * 100 + "vw");
+  heart.style.setProperty("--size", 15 + Math.random() * 22 + "px");
+  heart.style.setProperty("--duration", 5 + Math.random() * 5 + "s");
+
+  document.body.appendChild(heart);
+
+  setTimeout(() => heart.remove(), 10000);
+}
+
+function startHearts() {
+  for (let i = 0; i < 15; i++) {
+    setTimeout(createHeart, i * 150);
+  }
+
+  setInterval(createHeart, 800);
+}
+
+checkLock();
+setInterval(() => {
+  checkLock();
+  updateCountdown();
+}, 1000);
+</script>
+
+</body>
+</html>
