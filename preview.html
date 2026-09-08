@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You ♡</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:#fff0f5;font-family:Arial,sans-serif;display:flex;justify-content:center;align-items:center;overflow:hidden;color:#a83d5c}
+.container{width:90%;max-width:650px;text-align:center}
+.cute{font-size:90px;margin-bottom:20px;animation:float 2.5s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+h1{font-size:clamp(26px,6vw,42px);margin-bottom:40px;color:#a83d5c}
+.buttons{display:flex;justify-content:center;align-items:center;gap:35px;min-height:150px}
+button{border:none;color:white;font-size:22px;font-weight:bold;border-radius:18px;padding:18px 45px;cursor:pointer;transition:font-size .4s ease,padding .4s ease,transform .4s ease;box-shadow:0 8px 18px rgba(150,60,90,.15)}
+#yes{background:#65c7a5}
+#no{background:#f2646d}
+button:active{transform:scale(.95)}
+#message{margin-top:25px;font-size:18px;min-height:30px}
+#lock{display:none}
+#countdown{font-size:20px;line-height:1.8}
+#confession{display:none;animation:fadeIn 1s ease}
+#confession p{font-size:19px;line-height:1.9;color:#704353;white-space:pre-line}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.heart{position:fixed;bottom:-40px;pointer-events:none;animation:heartUp 6s linear forwards;opacity:.7}
+@keyframes heartUp{from{transform:translateY(0) rotate(0deg);opacity:.7}to{transform:translateY(-110vh) rotate(20deg);opacity:0}}
+@media(max-width:500px){.buttons{gap:15px}button{padding:15px 28px;font-size:19px}.cute{font-size:70px}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div id="lock">
+<div class="cute">💌</div>
+<h1>Жаахан хүлээгээрэй... ♡</h1>
+<div id="countdown"></div>
+</div>
+
+<div id="questionScreen">
+<div class="cute">૮ ˶ᵔ ᵕ ᵔ˶ ა</div>
+<h1 id="question">Чи үүрд минийх байх уу? 🥺</h1>
+<div class="buttons">
+<button id="yes">YES 💗</button>
+<button id="no">NO</button>
+</div>
+<div id="message"></div>
+</div>
+
+<div id="confession">
+<div class="cute">💗</div>
+<h1>Надад чамд хэлэх зүйл байна... 💌</h1>
+<p>Чамд хэлэхийг хүсэж байсан зүйлээ
+
+өнөөдөр зориг гаргаад хэлж байна.
+
+Чи миний хувьд үнэхээр онцгой хүн.
+
+Чамтай өнгөрүүлсэн жижигхэн мөчүүд хүртэл
+
+надад маш их үнэ цэнтэй байдаг.
+
+Тиймээс...
+
+Чи надтай хамт байхыг хүсэж байна уу? ♡</p>
+</div>
+
+</div>
+
+<script>
+// UNLOCK DATE: October 1, 2026 at 00:00 Mongolia time (UTC+8)
+const unlockDate = new Date("2026-10-01T00:00:00+08:00");
+
+const lock=document.getElementById("lock");
+const questionScreen=document.getElementById("questionScreen");
+const confession=document.getElementById("confession");
+const countdown=document.getElementById("countdown");
+const yes=document.getElementById("yes");
+const no=document.getElementById("no");
+const message=document.getElementById("message");
+
+const messages=[
+"Чи буруу дарчих шиг боллоо. 🥺",
+"Арай арай... 😭",
+"Нээрээ юу. 🥹",
+"Дахиад дараад үз дээ. 💗",
+"Дахиад нэг бодоод үзээрэй... 🥺",
+"ТИЙМ дээр дарах ёстой шүү. ♡"
+];
+
+let noCount=0;
+
+no.addEventListener("click",function(){
+noCount++;
+
+const fontSize=Math.min(22+noCount*5,55);
+const paddingY=Math.min(18+noCount*4,45);
+const paddingX=Math.min(45+noCount*10,110);
+
+yes.style.fontSize=fontSize+"px";
+yes.style.padding=paddingY+"px "+paddingX+"px";
+
+const noSize=Math.max(.55,1-noCount*.08);
+no.style.transform="scale("+noSize+")";
+
+const index=Math.min(noCount-1,messages.length-1);
+message.textContent=messages[index];
+});
+
+yes.addEventListener("click",function(){
+questionScreen.style.display="none";
+confession.style.display="block";
+createHearts();
+});
+
+function updateCountdown(){
+const difference=unlockDate-new Date();
+
+if(difference<=0){
+lock.style.display="none";
+questionScreen.style.display="block";
+return;
+}
+
+const days=Math.floor(difference/(1000*60*60*24));
+const hours=Math.floor((difference/(1000*60*60))%24);
+const minutes=Math.floor((difference/(1000*60))%60);
+const seconds=Math.floor((difference/1000)%60);
+
+countdown.innerHTML=
+"Нээх хүртэл<br><br>"+
+"<b>"+days+"</b> өдөр · "+
+"<b>"+hours+"</b> цаг · "+
+"<b>"+minutes+"</b> минут · "+
+"<b>"+seconds+"</b> секунд";
+}
+
+function checkDate(){
+if(new Date()<unlockDate){
+lock.style.display="block";
+questionScreen.style.display="none";
+confession.style.display="none";
+updateCountdown();
+}else{
+lock.style.display="none";
+questionScreen.style.display="block";
+}
+}
+
+function createHeart(){
+const heart=document.createElement("div");
+heart.className="heart";
+
+const heartTypes=["♡","♥","💗","💕","💖"];
+heart.textContent=heartTypes[Math.floor(Math.random()*heartTypes.length)];
+
+heart.style.left=Math.random()*100+"vw";
+heart.style.fontSize=15+Math.random()*20+"px";
+
+document.body.appendChild(heart);
+
+setTimeout(function(){heart.remove()},6000);
+}
+
+function createHearts(){
+for(let i=0;i<15;i++){
+setTimeout(createHeart,i*150);
+}
+setInterval(createHeart,800);
+}
+
+checkDate();
+setInterval(checkDate,1000);
+</script>
+</body>
+</html>
